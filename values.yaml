@@ -2,7 +2,7 @@ image:
   repository: harishdell/flask-demo-app
   tag: "1.1"
 
-replicas: 3
+replicas: 1
 
 service:
   port: 80
