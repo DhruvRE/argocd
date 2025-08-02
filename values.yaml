@@ -4,6 +4,9 @@ image:
 
 replicas: 1
 
+# Default namespace
+namespace: "flask-app"
+
 service:
   port: 80
   targetPort: 5000
