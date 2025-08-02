@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-flask-app
-  namespace: flask-app
+  namespace: {{ .Values.namespace }}
   labels:
     app: demo-flask-app
 spec:

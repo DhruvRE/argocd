@@ -2,14 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: demo-flask-app-service
-  namespace: flask-app
+  namespace: { { .Values.namespace } }
+
   labels:
     app: demo-flask-app
 spec:
   type: ClusterIP
   ports:
-  - port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.targetPort }}
-    protocol: TCP
+    - port: { { .Values.service.port } }
+      targetPort: { { .Values.service.targetPort } }
+      protocol: TCP
   selector:
     app: demo-flask-app
