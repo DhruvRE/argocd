@@ -1,6 +1,6 @@
 image:
   repository: harishdell/flask-demo-app
-  tag: "1.1"
+  tag: "1.0"
 
 replicas: 1
 
