@@ -32,6 +32,13 @@ jobs:
             dhruvre/flask-app:latest
             dhruvre/flask-app:${{ github.sha }}
 
+      - name: Sync ArgoCD app
+        env:
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        run: |
+          curl -X POST https://your-argocd-server/api/v1/applications/demo-flask-app/sync \
+            -H "Authorization: Bearer ${ARGOCD_AUTH_TOKEN}"
+
       - name: Update Helm values with new image tag
         run: |
           sed -i.bak "s|tag: .*|tag: ${{ github.sha }}|" demo/values.yaml
