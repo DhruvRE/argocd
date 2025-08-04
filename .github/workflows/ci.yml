@@ -1,4 +1,4 @@
-name: CI - Build, Push, and Update ArgoCD Values
+name: CI - Build and Update ArgoCD Repo
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - main
 
 jobs:
-  build-push-update:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
@@ -24,23 +24,21 @@ jobs:
 
       - name: Get short SHA
         id: vars
-        run: echo "SHA_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
-      - name: Build and Push Docker Image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./flask_app
+          context: .
           push: true
-          tags: harishdell/flask-demo-app:${{ env.SHA_TAG }}
+          tags: harishdell/flask-demo-app:${{ env.TAG }}
 
-      - name: Update values.yaml with new tag
+      - name: Clone ArgoCD repo
         run: |
-          sed -i 's/tag: .*/tag: "${{ env.SHA_TAG }}"/' demo/values.yaml
-
-      - name: Commit and push updated values.yaml
-        run: |
-          git config user.name "GitHub Actions"
+          git clone https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/${{ secrets.TARGET_REPO }} temp-demo
+          cd temp-demo
+          sed -i 's/tag: .*/tag: "${{ env.TAG }}"/' values.yaml
+          git config user.name "CI Bot"
           git config user.email "ci@github.com"
-          git add demo/values.yaml
-          git commit -m "Update image tag to ${{ env.SHA_TAG }}"
+          git commit -am "Update image tag to ${{ env.TAG }}"
           git push origin main
