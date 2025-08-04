@@ -1,0 +1,9 @@
+image:
+  repository: dhruvre/flask-app
+  tag: latest
+
+replicas: 1
+namespace: flask-app
+service:
+  port: 80
+  targetPort: 5000
