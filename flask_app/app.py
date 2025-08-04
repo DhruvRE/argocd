@@ -7,6 +7,7 @@ app = Flask(__name__)
 users = [
     {"id": 1, "name": "John Doe", "email": "john@example.com", "version":"v3"},
     {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "version":"v3"},
+    {"id": 3, "name": "Jane dsd", "email": "jane@example.com", "version":"v3"},
 ]
 
 @app.route('/health', methods=['GET'])
