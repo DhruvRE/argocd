@@ -1,0 +1,9 @@
+image:
+  repository: harishdell/flask-demo-app
+  tag: "1.1"
+
+replicas: 1
+namespace: flask-app
+service:
+  port: 80
+  targetPort: 5000
