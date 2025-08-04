@@ -69,7 +69,7 @@ def create_user():
 def root():
     """Root endpoint with API information"""
     return jsonify({
-        "message": "Flask Demo API",
+        "message": "Flask Demo",
         "endpoints": {
             "health": "GET /health",
             "get_users": "GET /users",
