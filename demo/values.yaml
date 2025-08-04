@@ -1,6 +1,6 @@
 image:
   repository: dhruvre/flask-app
-  tag: latest # or git-sha-based tag
+  tag: latest
 namespace: dhruv
 replicas: 1
 service:

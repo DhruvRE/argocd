@@ -1,12 +1,10 @@
-# .github/workflows/ci.yml
-name: Build, Push Docker Image and Update Helm
+name: Build, Tag, Push Docker Image and Update Helm
 
 on:
   push:
     paths:
       - "flask_app/**"
       - ".github/workflows/ci.yml"
-      - "helm/**"
 
 jobs:
   build:
@@ -25,28 +23,23 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract short SHA
-        id: vars
-        run: echo "sha_tag=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-
-      - name: Build and push Docker image
+      - name: Build and push Docker image with Git SHA tag
         uses: docker/build-push-action@v5
         with:
           context: ./flask_app
           push: true
-          tags: dhruvre/flask-app:${{ steps.vars.outputs.sha_tag }}
+          tags: |
+            dhruvre/flask-app:latest
+            dhruvre/flask-app:${{ github.sha }}
 
-      - name: Install yq
-        run: sudo apt-get install -y yq
-
-      - name: Update values.yaml with new image tag
+      - name: Update Helm values with new image tag
         run: |
-          yq eval '.image.tag = "${{ steps.vars.outputs.sha_tag }}"' -i helm/values.yaml
+          sed -i.bak "s|tag: .*|tag: ${{ github.sha }}|" demo/values.yaml
 
-      - name: Commit updated Helm values.yaml
+      - name: Commit updated values.yaml
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git add helm/values.yaml
-          git commit -m "Update image tag to ${{ steps.vars.outputs.sha_tag }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add demo/values.yaml
+          git commit -m "Update image tag to ${{ github.sha }}"
           git push
