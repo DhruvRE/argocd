@@ -1,9 +1,8 @@
 image:
   repository: dhruvre/flask-app
-  tag: latest
-
-replicas: 1
+  tag: latest # or git-sha-based tag
 namespace: dhruv
+replicas: 1
 service:
   port: 80
   targetPort: 5000
