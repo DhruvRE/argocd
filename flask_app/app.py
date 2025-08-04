@@ -9,8 +9,6 @@ users = [
     {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "version":"v2"}
 ]
 
-echo "# trigger build"
-
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
