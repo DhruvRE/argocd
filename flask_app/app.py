@@ -33,7 +33,7 @@ def get_users():
 def create_user():
     """POST endpoint to create a new user"""
     try:
-        # Get JSON data from request
+        # Get JSON data 
         data = request.get_json()
         
         # Validate required fields
