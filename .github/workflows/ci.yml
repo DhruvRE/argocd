@@ -9,10 +9,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (with PAT)
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -24,8 +29,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Debug token and repo
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           echo "Repo: ${{ github.repository }}"
           echo "Token length: ${#GH_PAT}"
@@ -41,8 +44,6 @@ jobs:
             dhruvre/flask-app:${{ github.sha }}
 
       - name: Sync ArgoCD app
-        env:
-          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         run: |
           curl -X POST https://506196ef442c.ngrok-free.app/api/v1/applications/demo-flask-app/sync \
             -H "Authorization: Bearer ${ARGOCD_AUTH_TOKEN}"
@@ -52,13 +53,10 @@ jobs:
           sed -i.bak "s|tag: .*|tag: ${{ github.sha }}|" demo/values.yaml
 
       - name: Commit updated values.yaml
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           echo "PAT length: ${#GH_PAT}"
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git
           git add demo/values.yaml
-          git commit -m "Update image tag to ${{ github.sha }}"
+          git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
           git push origin HEAD:master
