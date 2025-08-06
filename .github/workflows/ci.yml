@@ -36,7 +36,7 @@ jobs:
         env:
           ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         run: |
-          curl -X POST http://localhost:8080/api/v1/applications/demo-flask-app/sync \
+          curl -X POST https://d355e3ce1d2c.ngrok-free.app/api/v1/applications/demo-flask-app/sync \
             -H "Authorization: Bearer ${ARGOCD_AUTH_TOKEN}"
 
       - name: Update Helm values with new image tag
