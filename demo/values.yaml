@@ -1,6 +1,6 @@
 image:
   repository: dhruvre/flask-app
-  tag: d059f3323bb6622cb57ec28c032fbee23ac9196b
+  tag: 0bb97bfc1b864e8a7e1ae9c9bca41379e0de0cbc
 namespace: dhruv
 replicas: 1
 service:
